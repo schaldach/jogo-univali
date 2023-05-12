@@ -9,14 +9,80 @@
     <link rel='stylesheet' type='text/css' media='screen' href='main.css'>
 </head>
 
-<body>
-    <canvas id="canvas" style="border: 2px solid red;" width="800" height="800"></canvas>
+<body style="margin: 0;">
+    <canvas id="canvas" width="800" height="800"></canvas>
     <div style="display:none;">
-        <img id="source" src="assets/slime.png" />
-        <img id="tree" src="assets/tree.png" />
-        <img id="wolf" src="assets/wolf.png" />
+        <img id="tree" src="assets/SakuraTree.png" />
+        <img id="pFront" src="assets/playerFront.png" />
+        <img id="pBack" src="assets/playerBack.png" />
+        <img id="pLeft" src="assets/playerLeft.png" />
+        <img id="pRight" src="assets/playerRight.png" />
+        <img id="oniF" src="assets/oniF.png" />
+        <img id="oniB" src="assets/oniB.png" />
+        <img id="oniL" src="assets/oniL.png" />
+        <img id="oniR" src="assets/oniR.png" />
+        <img id="floor" src="assets/floor.png" />
+        <img id="brick" src="assets/brick.png" />
+        <img id="katanU" src="assets/katanU.png" />
+        <img id="katanD" src="assets/katanD.png" />
+        <img id="katanaL" src="assets/katanaL.png" />
+        <img id="katanaR" src="assets/katanaR.png" />
+        <img id="floorStart" src="assets/floor2.png" />
+        <img id="floorEnd" src="assets/floor1.png" />
+        <img id="map" src="assets/Map.png"/>
+
     </div>
+    <div style="text-align: center;position: absolute; width: 800px; height: 800px; background-color: rgba(0,0,0,0.75); top: 0; left: 0; display: flex; justify-content: center; align-items: center; gap: 25px; flex-direction: column;"
+        id="menu">
+        <div>Oni Hunter</div>
+        <div id="custom"></div>
+        <div id="score"></div>
+        Keybinds:
+        <br/><br/>
+        -Move: “W” ”A” ”S” ”D”
+        <br/>
+        -Attack: “Space”
+        <br/><br/>
+        Objetivo:
+        <br/>
+        Em Oni Hunter o jogador deve escapar do labirinto enquanto é perseguido pelo os Onis, saia do círculo no início
+        e chegue na Árvore de Sakura para finalizar, use sua espada para se defender.<br/> Lembre-se: "A melhor defesa é o
+        ataque”.
+
+        <button onclick="start()">Começar</button>
+    </div>
+    <script src='values.js'></script>
     <script src='script.js'></script>
+    <style>
+        #menu {
+            color: #fff;
+            font-size: 30px;
+        }
+
+        button {
+            color: #fff;
+            font-size: 30px;
+            border: none;
+            border-radius: 25px;
+            padding: 20px;
+            cursor: pointer;
+            background-color: #f00;
+        }
+
+        button:hover {
+            background-color: #f40;
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </body>
 
 </html>

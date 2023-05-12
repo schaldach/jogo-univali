@@ -1,84 +1,133 @@
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
-const image = document.getElementById("source");
 const tree = document.getElementById("tree");
-const playerImage = document.getElementById('wolf')
-const playerSpeed = 10
+const pFront = document.getElementById('pFront')
+const pBack = document.getElementById('pBack')
+const pLeft = document.getElementById('pLeft')
+const pRight = document.getElementById('pRight')
+const oniF = document.getElementById('oniF')
+const oniB = document.getElementById('oniB')
+const oniL = document.getElementById('oniL')
+const oniR = document.getElementById('oniR')
+const brick = document.getElementById('brick')
+const floorMap = document.getElementById('map')
+const custom = document.getElementById('custom')
+const katanaR = document.getElementById('katanaR')
+const katanaL = document.getElementById('katanaL')
+const katanU = document.getElementById('katanU')
+const katanD = document.getElementById('katanD')
+const floorEnd = document.getElementById('floorEnd')
+const floorStart = document.getElementById('floorStart')
+const scoreDisplay = document.getElementById('score')
+const tS = 50
+const floor = document.getElementById('floor')
+const menu = document.getElementById('menu')
+let points = 0
+let gameStarted = false
+let allEnemies = [...initialOnis]
 
-// {x:3812, y:39021}
-// {x: 0, y:0. width: 132, height: 192}
-function pointInsideRectangle(point, rectangle){
-    if(point.x > rectangle.x && point.x < rectangle.x+rectangle.width && point.y > rectangle.y && point.y < rectangle.y + rectangle.height){
+function start(){
+    menu.classList.add('hidden')
+    gameStarted = true
+}
+
+const directions = {
+    'front': pBack,
+    'back': pFront,
+    'left': pLeft,
+    'right': pRight,
+}
+const oniDirections = {
+    'front': pBack,
+    'back': pFront,
+    'left': pLeft,
+    'right': pRight,
+}
+
+const katanaDirections = {
+    'front': katanU,
+    'back': katanD,
+    'left': katanaL,
+    'right': katanaR,
+}
+
+function playerCollision(x,y){
+    if( y<0 || y>15 || x<0 || x>15||map[y][x] === 1 ){
         return true
     }
-    return false
 }
 
-// {x: 0, y:0. width: 132, height: 192}
-function rectanglesColide(rectangle1, rectangle2){
-    // for(let i=0; i<=1; i++){
-    //     for(let y=0; y<=1; y++){
-    //         if(pointInsideRectangle({x:rectangle1.x+i*rectangle1.width,y:rectangle1.y+i*rectangle1.height }, rectangle2)){
-    //             return true
-    //         }
-    //     }
-    // }
-    // for(let z=0; z<=1; z++){
-    //     for(let w=0; w<=1; w++){
-    //         if(pointInsideRectangle({x:rectangle2.x+w*rectangle2.width,y:rectangle2.y+z*rectangle2.height }, rectangle1)){
-    //             return true
-    //         }
-    //     }
-    // }
-    return false
-}
-
-window.addEventListener("keydown", (e) => {
-    let collision = rectanglesColide(player, tree)
-    console.log(collision);
+window.addEventListener("keypress", (e) => {
+    
+    if(!gameStarted || player.attack){return}
     switch(e.key){
         case 'w':
-            player.y -= collision ? 0 : playerSpeed
+            player.direction = 'front'
+            if(!playerCollision(player.x, player.y-1)){
+                player.y -= 1
+            }
             break
         case 'a':
-            player.x -= collision ? 0 : playerSpeed
+            player.direction = 'left'
+            if(!playerCollision(player.x-1, player.y)){
+                player.x -= 1
+            }
             break
         case 's':
-            player.y += collision ? 0 : playerSpeed
+            player.direction = 'back'
+            if(!playerCollision(player.x, player.y+1)){
+                player.y += 1
+            }
             break
         case 'd':
-            player.x += collision ? 0 : playerSpeed
+            player.direction = 'right'
+            if(!playerCollision(player.x+1, player.y)){
+                player.x += 1
+            }
+            break
+    }
+    if(e.code === 'Space' && !player.cooldown){
+        player.attack = true
+        player.cooldown = true
+        setTimeout(() => {player.attack = false}, 100)
+        setTimeout(() => {player.cooldown = false}, 500)
     }
 })
-const player = {
-    x: 100,
-    y: 100,
-    width: 64,
-    height: 64,
-    health: 100,
+
+let player = {
+    x: 2,
+    y: 12,
+    direction: 'back',
+    attack: false,
+    cooldown: false,
 }
 
 ctx.fillStyle = '#000000'
-ctx.drawImage(image, 50, 50, 64, 64);
 const map = [
-    [0,0,0,0,0,1,0,0],
-    [0,0,0,0,0,0,1,0],
-    [0,0,0,0,0,0,0,1],
-    [0,1,1,1,1,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,2,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,1],
+    [1,1,1,1,0,1,0,1,0,1,0,1,1,0,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1],
+    [1,1,1,1,0,1,0,1,0,1,1,0,1,0,1,1],
+    [1,1,3,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
 const allTrees = []
 map.forEach((row, index) => {
     row.forEach((col,innerIndex) => {
         if(col === 1){
             allTrees.push({
-                x: innerIndex*100,
-                y: index*100,
-                width: 100,
-                height: 100
+                x: innerIndex*50,
+                y: index*50,
             })
         }
     })
@@ -87,19 +136,89 @@ console.log(allTrees);
 
 function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    map.forEach((row, index) => {
-        row.forEach((col,innerIndex) => {
-            ctx.fillStyle = '#46fa70'
-            ctx.fillRect(innerIndex*100,index*100, 100,100)
-            ctx.fillStyle = col === 0 ? '#1cad43' : '#1cad43'
-            ctx.fillRect(innerIndex*100+1,index*100+1, 98,98)
-            if(col === 1){
-                ctx.drawImage(tree, innerIndex*100+18, index*100+18, 64, 64);
+    ctx.drawImage(floorMap, 0,0,800,800)
+    ctx.drawImage(tree, 2*tS, 2*tS, tS, tS)
+    if(player.x === 2 && player.y === 2){
+        restart(true)
+    }
+    if(player.attack){
+        let dimensions = {
+            x: player.direction === 'left' ? player.x-2 : player.direction === 'right' ? player.x+1 : player.x,
+            y:player.direction === 'front' ? player.y-2 : player.direction === 'back' ? player.y+1 : player.y,
+            width: player.direction === 'right' || player.direction === 'left' ? tS*2:tS,
+            height: player.direction === 'front' || player.direction === 'back' ? tS*2:tS
+        }
+        ctx.drawImage(katanaDirections[player.direction], dimensions.x*tS, dimensions.y*tS, dimensions.width, dimensions.height)
+    }
+    allEnemies.forEach((enemy, index) => {
+        ctx.globalAlpha = enemy.dead ? 0.25 : 1.0;
+        const rightOni = enemy.pathDirection === 1 ? oniF : oniB
+        ctx.drawImage(rightOni, enemy.x*tS, enemy.y*tS, tS, tS)
+        ctx.globalAlpha = 1.0;
+        if(!enemy.dead && enemy.x === player.x && enemy.y === player.y){
+            restart(false)
+        }
+        if(player.attack && !enemy.dead){
+            if(player.direction === 'back'){
+                if(enemy.x === player.x && (enemy.y === player.y +1 || enemy.y === player.y +2) ){
+                    setTimeout(() => {allEnemies[index].dead = false}, 3500)
+                    enemy.dead = true
+                    points ++
+                }
             }
-        })
+            if(player.direction === 'front'){
+                if(enemy.x === player.x && (enemy.y === player.y -1 || enemy.y === player.y -2) ){
+                    setTimeout(() => {allEnemies[index].dead = false}, 3500)
+                    enemy.dead = true
+                    points ++
+                }
+            }
+            if(player.direction === 'left'){
+                if(enemy.y === player.y && (enemy.x === player.x -1 || enemy.x === player.x -2) ){
+                    setTimeout(() => {allEnemies[index].dead = false}, 3500)
+                    enemy.dead = true
+                    points ++
+                }
+            }
+            if(player.direction === 'right'){
+                if(enemy.y === player.y && (enemy.x === player.x +1 || enemy.x === player.x +2) ){
+                    setTimeout(() => {allEnemies[index].dead = false}, 3500)
+                    enemy.dead = true
+                    points ++
+                }
+            }
+        }
     })
-    
-    ctx.drawImage(wolf, player.x-32, player.y-32, 64, 64);
+    ctx.drawImage(directions[player.direction], player.x*tS, player.y*tS, tS, tS);
     window.requestAnimationFrame(animate)
 }
+
+function restart(win){
+    player = {
+        x: 2,
+        y: 12,
+        direction: 'back',
+        attack: false
+    }
+    allEnemies = [...initialOnis]
+    custom.innerHTML = win ? 'Você venceu!' : 'Você morreu!'
+    scoreDisplay.innerHTML = `Você matou ${points} demônios`
+    menu.classList.remove('hidden')
+    points = 0
+    gameStarted = false
+}
 animate()
+setInterval(() => {
+    if(!gameStarted){return}
+    allEnemies.forEach(enemy => {
+        if(enemy.pathIndex === enemy.path.length-1){
+            enemy.pathDirection = -1
+        }
+        if(enemy.pathIndex === 0){
+            enemy.pathDirection = 1
+        }
+        enemy.pathIndex = enemy.pathIndex + enemy.pathDirection
+        enemy.x = enemy.path[enemy.pathIndex].x
+        enemy.y = enemy.path[enemy.pathIndex].y
+    })
+}, 100)
