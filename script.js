@@ -17,6 +17,7 @@ const katanaL = document.getElementById('katanaL')
 const katanU = document.getElementById('katanU')
 const katanD = document.getElementById('katanD')
 const floorEnd = document.getElementById('floorEnd')
+const leafs = document.getElementById('leafs')
 const floorStart = document.getElementById('floorStart')
 const scoreDisplay = document.getElementById('score')
 const tS = 50
@@ -38,10 +39,10 @@ const directions = {
     'right': pRight,
 }
 const oniDirections = {
-    'front': pBack,
-    'back': pFront,
-    'left': pLeft,
-    'right': pRight,
+    'front': oniB,
+    'back': oniF,
+    'left': oniL,
+    'right': oniR,
 }
 
 const katanaDirections = {
@@ -106,7 +107,7 @@ ctx.fillStyle = '#000000'
 const map = [
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-    [1,1,2,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
     [1,1,1,0,1,0,1,0,1,0,1,0,1,0,1,1],
     [1,1,1,1,0,1,0,1,0,1,0,1,1,0,1,1],
     [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
@@ -115,9 +116,9 @@ const map = [
     [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1],
-    [1,1,1,1,0,1,0,1,0,1,1,0,1,0,1,1],
-    [1,1,3,0,0,0,0,0,0,0,0,0,0,0,1,1],
-    [1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1],
+    [1,1,1,1,0,1,1,0,1,0,1,0,1,0,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,1,1,1,0,1,1,0,1,0,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
     [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ]
@@ -152,7 +153,7 @@ function animate(){
     }
     allEnemies.forEach((enemy, index) => {
         ctx.globalAlpha = enemy.dead ? 0.25 : 1.0;
-        const rightOni = enemy.pathDirection === 1 ? oniF : oniB
+        const rightOni = oniDirections[enemy.path[enemy.pathIndex].direction]
         ctx.drawImage(rightOni, enemy.x*tS, enemy.y*tS, tS, tS)
         ctx.globalAlpha = 1.0;
         if(!enemy.dead && enemy.x === player.x && enemy.y === player.y){
@@ -212,12 +213,9 @@ setInterval(() => {
     if(!gameStarted){return}
     allEnemies.forEach(enemy => {
         if(enemy.pathIndex === enemy.path.length-1){
-            enemy.pathDirection = -1
+            enemy.pathIndex = 0
         }
-        if(enemy.pathIndex === 0){
-            enemy.pathDirection = 1
-        }
-        enemy.pathIndex = enemy.pathIndex + enemy.pathDirection
+        enemy.pathIndex++
         enemy.x = enemy.path[enemy.pathIndex].x
         enemy.y = enemy.path[enemy.pathIndex].y
     })
